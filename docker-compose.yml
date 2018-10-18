@@ -1,0 +1,36 @@
+version: '3'
+services:
+    db:
+        container_name: db
+        image: mysql:latest
+        environment:
+            - MYSQL_ROOT_PASSWORD=123
+            - MYSQL_DATABASE=houses
+            - MYSQL_USER=user
+            - MYSQL_PASSWORD=password
+        volumes:
+            - ./data/db:/var/lib/mysql
+        ports:
+            - 3306:3306
+    pma:
+        container_name: pma
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 8081:80
+    adminer:
+        container_name: adminer
+        image: adminer
+        restart: always
+        ports:
+          - 8080:8080
+    php:
+        container_name: php
+        image: php:latest
+        command: >
+            bash -c "docker-php-ext-install pdo_mysql 
+            && php -S 0.0.0.0:8000 -t public"
+        volumes:
+            - ./app:/app
+        working_dir: /app
+        ports:
+            - 8000:8000
